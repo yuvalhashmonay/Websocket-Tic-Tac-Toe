@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from turns_validator import TurnsValidator # later make just make TurnsValidator something an attribute of the TurnsGame abstract parent class
+from turns_validator import TurnsValidator
 from enum import Enum, auto
 
 
