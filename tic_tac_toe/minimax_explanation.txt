@@ -1,0 +1,65 @@
+This file is my personal my take on how the minimax algorithm in Tic-Tac-Toe works:
+
+Like in other recursive algorithms, it's easier to understand how the function needs to be written, if we imagine that when we call it from our current invocation,
+someone has already magically wrote it for us. And like in any turns game,each player tries to make the move that'll eventually yield them the best result at the end of the game.
+The reason I chose to say "best result" and not "win", is because at some potential stage of a game, the best result a player can eventually achieve is a draw.
+
+So if we're trying to decide which square to choose, we can iterate over all the available ones, for each one, make our move temporarily (choose a square), and then check
+what's the best score (outcome) our opponent achieved for themselves given our choice. If our move caused the best achievable score by our opponent to be a draw, then that's good. If a loss, even better!
+We'll save the square that forced our opponent to achieve their worst score.
+
+This is all well and good, but what about that magical recursive function that'll tell give us our opponent's best score?
+Well, our opponent is also trying to win the game of course, so if we put ourselves in their shoes, we realize that they'd want to use the same tactic.
+They'd go over each square from the ones that will have remained after we made our choice. For each one, choose it, and eventually see which one forced us
+to get our worse score. So as we can see, we already wrote that magic recursive function ourselves.
+
+Now, the only remaining question, is how do we implement it? How do differentiate between high score and low, if the recursion function
+switches between the players in each layer?
+
+Since the players are playing against each other, one player's high score, is a low score of the other. And so, all we need to select before we start is which
+one we'll try.
+
+
+In my version I might have made things unnecessarily more complicated, because I always return 1 for a win by player 1, and -1 for a win for player 2.
+Then, I do some trick in the if statement that checks if it's the best score. But I think that maybe I could have also just made a win for ***player 1***  a 1
+and then the best score for player 1 is the highest and the best score for player 2 is the lowest.
+
+
+
+
+Revised Version:
+This file is my personal take on how the minimax algorithm works in Tic-Tac-Toe:
+
+Like with many recursive algorithms, it's easier to understand how the function should be written if we imagine that someone has already magically implemented it for us. We just need to trust it works and focus on how to use it from our current step.
+
+In a two-player turn-based game like Tic-Tac-Toe, each player tries to make the move that will eventually yield them the best possible result. I say best result and not necessarily win, because sometimes a draw is the best you can hope for in a given position.
+
+So, when it's our turn to choose a square, we can:
+
+Iterate over all the available squares.
+
+For each one, temporarily make that move.
+
+Call our magic recursive function to find out the best score our opponent can achieve after our move.
+
+From that, we know how good our move is — the worse the outcome for our opponent, the better it is for us.
+
+We then keep track of the move that led to the worst result for them (and therefore, the best for us).
+
+But what is that magical recursive function that tells us the best our opponent can achieve?
+
+Well, we can think from their perspective: they're trying to do the same thing — pick a move that makes us (the opponent in their turn) end up with the worst possible result. So the same logic applies. In fact, that is the same function. It’s just being called with the roles swapped.
+
+Now, the only remaining question is: how do we implement this? Specifically, how do we determine whether a score is better or worse, given that the recursive function alternates between players?
+
+One way is to assign fixed numerical values to outcomes. In my version:
+
+A win for player 1 is 1
+
+A win for player 2 is -1
+
+A draw is 0
+
+Then, when choosing the best move, player 1 always tries to maximize the score, and player 2 tries to minimize it. This way, the sign of the score itself naturally reflects which player benefits.
+
+In hindsight, I may have overcomplicated things a bit. I included some logic that flips or compares scores with trickier if-statements. But I now realize that a simple convention — always making player 1 maximize, and player 2 minimize — makes everything more elegant and easier to follow.

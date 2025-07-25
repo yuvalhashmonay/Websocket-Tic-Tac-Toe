@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .buttons h3 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .buttons div {
+    margin-bottom: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .buttons label {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+
+  .buttons input[type="text"] {
+    padding: 15px;
+    font-size: 1.2rem;
+    width: 80%;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+  }
+
+  .buttons button {
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    margin: 10px 0;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .join button {
+    background: linear-gradient(135deg, #1e90ff, #87cefa); /* Blue to Light Blue gradient */
+  }
+
+  .create-btn {
+  color: white;
+    background: linear-gradient(135deg, #6ab04c, #f9ca24); /* Darker Green to Darker Yellow gradient */
+  }
+
+  .single-player-btn {
+  color: white;
+    background: linear-gradient(to right, #5e00a1, #6a00a1, #a100d4, #d400ff, #ff00ff, #ff00d4, #ff00a1, #ff006f);
+  }
+
+  .buttons button:hover {
+    opacity: 0.9;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+
+  ul li {
+    color: red;
+    font-size: 1.2rem;
+  }
+</style>
+
+<form method="post" class="buttons">
+  <h3>Enter The Game Room</h3>
+  <div>
+    <label style="font-weight:bold">Name:</label>
+    <input
+      type="text"
+      placeholder="Pick a name!"
+      name="name"
+      value="{{name}}"
+      minlength="{{ min_name_length }}"
+      maxlength="{{ max_name_length }}"
+      required
+    />
+  </div>
+  <div class="join">
+    <input type="text" placeholder="Room Code" name="code" id="roomCode" value="{{code}}" />
+    <button type="submit" name="join" id="joinButton" disabled>Join a Room</button>
+  </div>
+  <button type="submit" name="create" class="create-btn">Create a Room</button>
+  <button type="submit" name="single_player_btn" class="single-player-btn">Play against the server</button>
+  {% if error %}
+  <ul>
+    <li style="font-weight:bold">{{error}}</li>
+  </ul>
+  {% endif %}
+</form>
+
+<script>
+  var roomCodeInput = document.getElementById('roomCode');
+  var joinButton = document.getElementById('joinButton');
+
+  function update_join_button_state() {
+    if (roomCodeInput.value.trim() === '') {
+      joinButton.disabled = true;
+      joinButton.style.color = "grey";
+    } else {
+      joinButton.disabled = false;
+      joinButton.style.color = "white";
+    }
+
+  }
+
+  update_join_button_state();
+
+  roomCodeInput.addEventListener('input', function() {
+    update_join_button_state();
+  });
+</script>
+{% endblock %}

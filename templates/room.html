@@ -1,0 +1,130 @@
+{% extends 'base.html' %} {% block content %}
+<!--<table border="1">-->
+<!--    <tr>-->
+<!--        <td onclick="step(this, '00')"></td>-->
+<!--        <td onclick="step(this, '01')"></td>-->
+<!--        <td onclick="step(this, '02')"></td>-->
+<!--    </tr>-->
+<!--     <tr>-->
+<!--        <td onclick="step(this, '10')"></td>-->
+<!--        <td onclick="step(this, '11')"></td>-->
+<!--        <td onclick="step(this, '12')"></td>-->
+<!--    </tr>-->
+<!--    <tr>-->
+<!--        <td onclick="step(this, '20')"></td>-->
+<!--        <td onclick="step(this, '21')"></td>-->
+<!--        <td onclick="step(this, '22')"></td>-->
+<!--    </tr>-->
+<!--</table>-->
+
+<br>
+
+<div class="message-box">
+      <div class="buttonscontainer">
+        <form action="{{ url_for('home') }}" method="get">
+            <button type="submit" id="homeButton">Go to Home</button>
+        </form>
+        <div id="div_for_new_game_button"></div>
+    </div>
+
+  <h1 id="room_header">Game Room: {{code}}</h1>
+  <h2 id="generalHeader">Game not yet started</h2>
+  <div>
+    <h3 style="text-align: center;">Connected Players</h3>
+    <h2 id="connectedPlayers" style=" align-self: flex-start;">this heading is for player names</h2>
+  </div>
+  <P id="score" style="font-weight: bold;"></P>
+
+
+  <h2 id="CurrentPlayerHeading"></h2>
+
+<div id="tableContainer"></div>
+
+  <div class="messages" id="messages"></div>
+  <div class="inputs">
+    <input
+      type="text"
+      rows="3"
+      placeholder="Message"
+      name="message"
+      id="message"
+    />
+    <button type="button" name="send" id="send-btn" onClick="sendMessage()">
+      Send
+    </button>
+  </div>
+</div>
+<script>
+     var my_turn;
+     var game_is_over = false;
+     var game_series;
+     var general_header = document.getElementById('generalHeader');
+     var game_end_animation_interval;
+     var connected_players_element = document.getElementById('connectedPlayers');
+     var score_element = document.getElementById('score');
+     var room_header_element = document.getElementById('room_header');
+     var player_number = {{player_number}};
+     var connected_players_names = {{ connected_players_names | tojson }};
+     var current_player_name;
+     var current_player_mark;
+</script>
+<script src="{{ url_for('static', filename='js/room_main.js') }}"></script>
+
+<script type="text/javascript">
+  var socketio = io();
+
+  const messages = document.getElementById("messages");
+
+  const createMessage = (name, msg) => {
+    const content = `
+    <div class="text">
+        <span>
+            <strong>${name}</strong>: ${msg}
+        </span>
+        <span class="muted">
+            ${new Date().toLocaleString()}
+        </span>
+    </div>
+    `;
+    messages.innerHTML += content;
+  };
+// display a new message
+  socketio.on("message", (data) => {
+    createMessage(data.name, data.message);
+  });
+// send message
+  const sendMessage = () => {
+    const message = document.getElementById("message");
+    if (message.value == "") return;
+    socketio.emit("message", { data: message.value });
+    message.value = "";
+  };
+  socketio.on("turn", (data) => {
+    update_game(data);
+
+  });
+
+    socketio.on("inactive_room", (data) => {
+      console.log("Player left, redirecting back to home...");
+      alert("Player left, redirecting back to home...");
+      // Redirect to home page
+        window.location.href = "/";
+      room_header.textContent = "Inactive room, go back to home page. {{home_url}}";
+      general_header.textContent = "" ;
+      connected_players_element.textContent = "";
+  });
+
+    socketio.on("game_update", (data) => {
+      update_game(data);
+  });
+
+</script>
+
+
+
+<!--Display all messages (this only happens when we enter the page) -->
+{% for msg in messages %}
+<script type="text/javascript">
+  createMessage("{{msg.name}}", "{{msg.message}}");
+</script>
+{% endfor %} {% endblock %}
