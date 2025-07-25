@@ -50,7 +50,7 @@ def validate_home_post_request(name, room_code, join):
     if not (MIN_NAME_LENGTH <= len(name) <= MAX_NAME_LENGTH):
         return None, f"Name length has to be {MIN_NAME_LENGTH}-{MAX_NAME_LENGTH} characters long."
 
-    if join is not False:  # if it's a join (previously was -> join != False)
+    if join is not False:
         if not room_code:
             return None, "Please enter a room code"
         if room_code not in rooms:
