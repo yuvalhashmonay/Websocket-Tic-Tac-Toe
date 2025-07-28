@@ -8,8 +8,8 @@ from functools import partial
 import logging
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "I am secret key so don't tell anyone 🤫"
-socketio = SocketIO(app)  # Use eventlet as async_mode
+app.config["SECRET_KEY"] = "I am a secret key so don't tell anyone🤫"
+socketio = SocketIO(app, async_mode='eventlet')  # (requires eventlet to be installed)
 
 rooms = {}
 
